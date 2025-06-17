@@ -2,6 +2,6 @@ package org.example.service;
 
 import java.util.Map;
 
-public interface Libraries {
+public interface LibrariesService {
     Map<String,Integer> getAllBook();
 }
