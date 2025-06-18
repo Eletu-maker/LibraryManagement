@@ -145,4 +145,14 @@ public class UserController {
             return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    @PostMapping("/getAfterReturnDay")
+    public ResponseEntity<?> getAfterReturnDay(){
+        try {
+            Map<String, List<Book>> response = librariesService.getAfterReturnDay();
+            return new ResponseEntity<>(new ApiResponse(true,response), HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(new ApiResponse(false,e.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

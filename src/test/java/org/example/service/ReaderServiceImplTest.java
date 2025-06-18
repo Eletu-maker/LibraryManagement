@@ -71,7 +71,7 @@ private RegisterReaderRequest request(){
 
     private BorrowRequest borrowRequest(){
         BorrowRequest request = new BorrowRequest();
-        request.setTitle("my temo");
+        request.setTitle("my demo");
         request.setAuthor("usman");
         request.setEmail("eric@gmail.com");
         return request;
@@ -85,7 +85,7 @@ private RegisterReaderRequest request(){
 
     private ReturnRequest returnRequest(){
         ReturnRequest request = new ReturnRequest();
-        request.setTitle("my temo");
+        request.setTitle("my demo");
         request.setAuthor("usman");
         request.setEmail("eric@gmail.com");
         return request;

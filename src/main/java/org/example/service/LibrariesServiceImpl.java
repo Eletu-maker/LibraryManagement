@@ -49,11 +49,24 @@ public class LibrariesServiceImpl implements LibrariesService {
         for(Reader reader : read){
             borrowMap.put(reader.getPhoneNumber(),reader.getBooksBorrowed());
         }
+        map(borrowMap);
         Library library = new Library();
-        library.setCollectionOfBorrowers(borrowMap);
+        library.setCollectionOfBorrowers(map(borrowMap));
         libraries.save(library);
 
         return library.getCollectionOfBorrowers();
+    }
+
+    private HashMap<String,List<Book>> map(HashMap<String,List<Book>> valu){
+        HashMap<String,List<Book>> Map = new HashMap<>();
+        for (Map.Entry<String,List<Book>> entry : valu.entrySet()){
+            List<Book> value = entry.getValue();
+            String key = entry.getKey();
+            if(!value.isEmpty()){
+                Map.put(key,value);
+            }
+        }
+        return Map;
     }
 
     @Override
@@ -69,11 +82,12 @@ public class LibrariesServiceImpl implements LibrariesService {
             }
             borrowMap.put(reader.getPhoneNumber(),collection);
         }
+        map(borrowMap);
         Library library = new Library();
-        library.setAfterReturnDay(borrowMap);
+        library.setAfterReturnDay(map(borrowMap));
         libraries.save(library);
 
-        return borrowMap;
+        return library.getAfterReturnDay();
     }
 
     @Override

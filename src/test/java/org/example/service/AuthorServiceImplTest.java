@@ -60,7 +60,7 @@ public class AuthorServiceImplTest {
     private BookRequest book(){
         BookRequest book = new BookRequest();
         book.setAuthor("usman");
-        book.setTitle("my temo");
+        book.setTitle("my demo");
         book.setEmail("usman@gmail.com");
         book.setNumber(5);
         return book;
@@ -90,6 +90,12 @@ public class AuthorServiceImplTest {
         RemoveBookResponse response = librariesService.removeBook(removeBookRequest());
         assertEquals("Removed successfully",response.getMessage());
 
+    }
+
+    @Test
+    public void testReturn(){
+        Map<String, List<Book>> book = librariesService.getAfterReturnDay();
+        assertEquals(1,book.size());
     }
 
     private RemoveBookRequest removeBookRequest(){
