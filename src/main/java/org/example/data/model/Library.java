@@ -15,7 +15,7 @@ public class Library {
     @Id
     private String id;
     private Map<String,Integer> collectionOfBook;
-    private List<HashMap<Reader,Integer>> collectionOfBorrowers;
+    private Map<String,List<Book>> collectionOfBorrowers;
     private List<HashMap<Reader,Book>> afterReturnDay;
 
 }

@@ -8,14 +8,19 @@ import org.example.data.repository.Readers;
 import org.example.dto.request.BorrowRequest;
 import org.example.dto.request.LoginReaderRequest;
 import org.example.dto.request.RegisterReaderRequest;
+import org.example.dto.request.ReturnRequest;
 import org.example.dto.response.BorrowResponse;
 import org.example.dto.response.LoginReaderResponse;
 import org.example.dto.response.RegisterReaderResponse;
+import org.example.dto.response.ReturnResponse;
+import org.example.exception.BorrowException;
 import org.example.exception.LoginException;
 import org.example.exception.RegisterException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,16 +55,68 @@ public class ReaderServiceImpl implements ReaderService{
     @Override
     public List<Book> getAuthorBooks(String author) {
         Author authorAcc = authors.findByName(author);
+        if (authorAcc == null) throw new BorrowException("Author not found");
         return authorAcc.getMyBooks();
     }
-
     @Override
     public BorrowResponse borrowBook(BorrowRequest request) {
         BorrowResponse response = new BorrowResponse();
-        //List<Author> authorsBook = authors.findAll()
+        Reader reader= readers.findByEmail(request.getEmail());
+        if(!reader.isLogin()) throw new LoginException("need to login");
+
+        if(reader.getBooksBorrowed() == null){
+            reader.setBooksBorrowed(new ArrayList<>());
+        }
+
+        if (checkBook(request)) throw new BorrowException("cant borrow the same book");
+
+        Book theBook = getTheBook(request);
+        if (theBook == null) throw  new BorrowException("book is not in the library");
+
+        reader.getBooksBorrowed().add(theBook);
+        readers.save(reader);
+        response.setMessage("borrowed successful");
+        return response;
+    }
+
+    @Override
+    public ReturnResponse returnBook(ReturnRequest request) {
+        ReturnResponse response = new ReturnResponse();
+        Reader reader= readers.findByEmail(request.getEmail());
+        if(!reader.isLogin()) throw new LoginException("need to login");
+
         return null;
+    }
 
 
+    private boolean checkBook(BorrowRequest request){
+        Reader reader= readers.findByEmail(request.getEmail());
+        if (reader.getBooksBorrowed() == null) return false;
+        for(Book book: reader.getBooksBorrowed()){
+            if(book.getTitle().equals(request.getTitle()) && book.getAuthor().equals(request.getAuthor())){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private Book getTheBook(BorrowRequest request){
+        Author authorAcc = authors.findByName(request.getAuthor());
+        if (authorAcc == null) throw new BorrowException("Author not found");
+
+        //List<Book> authorBooks = getAuthorBooks(request.getAuthor());
+        for (Book book:authorAcc.getMyBooks()){
+            if(book.getTitle().equals(request.getTitle())){
+                if(book.getNumber() <= 0) throw new BorrowException("out of book");
+                int num = book.getNumber() -1;
+                book.setNumber(num);
+                book.setTimeCollected(LocalDate.now());
+                book.setTimeToReturn(LocalDate.now().plusDays(7));
+                authors.save(authorAcc);
+                return book;
+            }
+        }
+        return null;
     }
 
 

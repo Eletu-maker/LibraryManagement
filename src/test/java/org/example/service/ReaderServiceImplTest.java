@@ -2,8 +2,10 @@ package org.example.service;
 
 import org.example.data.model.Book;
 import org.example.data.repository.Readers;
+import org.example.dto.request.BorrowRequest;
 import org.example.dto.request.LoginReaderRequest;
 import org.example.dto.request.RegisterReaderRequest;
+import org.example.dto.response.BorrowResponse;
 import org.example.dto.response.LoginReaderResponse;
 import org.example.dto.response.RegisterReaderResponse;
 import org.junit.jupiter.api.Test;
@@ -55,6 +57,20 @@ private RegisterReaderRequest request(){
         List<Book> books = readerService.getAuthorBooks("usman");
         System.out.println(books);
         assertEquals(2,books.size());
+    }
+
+    @Test
+    public  void testBorrowBook(){
+        BorrowResponse response = readerService.borrowBook(borrowRequest());
+        assertEquals("borrowed successful",response.getMessage());
+    }
+
+    private BorrowRequest borrowRequest(){
+        BorrowRequest request = new BorrowRequest();
+        request.setTitle("my temo");
+        request.setAuthor("usman");
+        request.setEmail("eric@gmail.com");
+        return request;
     }
 
 }

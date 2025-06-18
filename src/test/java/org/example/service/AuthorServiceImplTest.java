@@ -1,5 +1,6 @@
 package org.example.service;
 
+import org.example.data.model.Book;
 import org.example.dto.request.BookRequest;
 import org.example.dto.request.LoginAuthorRequest;
 import org.example.dto.request.LoginReaderRequest;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -77,6 +79,12 @@ public class AuthorServiceImplTest {
         Map<String,Integer> book = librariesService.getAllBook();
         assertEquals(2,book.size());
 
+    }
+
+    @Test
+    public void testGetBorrowedBook(){
+        Map<String, List<Book>> book = librariesService.getBorrowBook();
+        assertEquals(1,book.size());
     }
 
 }
