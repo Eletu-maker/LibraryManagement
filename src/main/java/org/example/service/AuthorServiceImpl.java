@@ -8,6 +8,7 @@ import org.example.data.repository.Libraries;
 import org.example.dto.request.BookRequest;
 import org.example.dto.request.LoginAuthorRequest;
 import org.example.dto.request.RegisterAuthorRequest;
+import org.example.dto.response.BookResponse;
 import org.example.dto.response.LoginAuthorResponse;
 import org.example.dto.response.RegisterAuthorResponse;
 import org.example.exception.AddException;
@@ -51,7 +52,8 @@ public class AuthorServiceImpl implements AuthorService{
         return response;
     }
     @Override
-    public void addBook(BookRequest bookRequest) {
+    public BookResponse addBook(BookRequest bookRequest) {
+        BookResponse response = new BookResponse();
         Author author = authors.findByEmail(bookRequest.getEmail());
         if (author == null) throw new RegisterException("need to register before you can upload a book");
         if (!author.isLogin()) throw new LoginException("need to login");
@@ -68,12 +70,14 @@ public class AuthorServiceImpl implements AuthorService{
         if(checkBook(bookRequest))throw new AddException("book already in library");
         author.getMyBooks().add(book);
         authors.save(author);
-
+        response.setMessage("Book added successfully");
+        return  response;
 
     }
 
     @Override
-    public void addToBook(BookRequest bookRequest) {
+    public BookResponse addToBook(BookRequest bookRequest) {
+        BookResponse response = new BookResponse();
         if(checkBook(bookRequest)){
             Author author = authors.findByEmail(bookRequest.getEmail());
             for (Book book: author.getMyBooks()){
@@ -88,7 +92,8 @@ public class AuthorServiceImpl implements AuthorService{
             authors.save(author);
         }
 
-
+        response.setMessage("Book added successfully");
+        return  response;
     }
 
 

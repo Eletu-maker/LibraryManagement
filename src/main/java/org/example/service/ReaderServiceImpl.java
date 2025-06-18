@@ -5,10 +5,7 @@ import org.example.data.model.Book;
 import org.example.data.model.Reader;
 import org.example.data.repository.Authors;
 import org.example.data.repository.Readers;
-import org.example.dto.request.BorrowRequest;
-import org.example.dto.request.LoginReaderRequest;
-import org.example.dto.request.RegisterReaderRequest;
-import org.example.dto.request.ReturnRequest;
+import org.example.dto.request.*;
 import org.example.dto.response.BorrowResponse;
 import org.example.dto.response.LoginReaderResponse;
 import org.example.dto.response.RegisterReaderResponse;
@@ -54,8 +51,8 @@ public class ReaderServiceImpl implements ReaderService{
     }
 
     @Override
-    public List<Book> getAuthorBooks(String author) {
-        Author authorAcc = authors.findByName(author);
+    public List<Book> getAuthorBooks(AuthorName author) {
+        Author authorAcc = authors.findByName(author.getName());
         if (authorAcc == null) throw new BorrowException("Author not found");
         return authorAcc.getMyBooks();
     }
@@ -137,10 +134,16 @@ public class ReaderServiceImpl implements ReaderService{
                 if(book.getNumber() <= 0) throw new BorrowException("out of book");
                 int num = book.getNumber() -1;
                 book.setNumber(num);
-                book.setTimeCollected(LocalDate.now());
-                book.setTimeToReturn(LocalDate.now().plusDays(7));
                 authors.save(authorAcc);
-                return book;
+
+
+                Book borrowedBook = new Book();
+                borrowedBook.setTitle(book.getTitle());
+                borrowedBook.setAuthor(book.getAuthor());
+                borrowedBook.setTimeCollected(LocalDate.now());
+                borrowedBook.setTimeToReturn(LocalDate.now().plusDays(7));
+                return borrowedBook;
+
             }
         }
         return null;

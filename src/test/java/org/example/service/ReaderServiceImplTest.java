@@ -2,10 +2,7 @@ package org.example.service;
 
 import org.example.data.model.Book;
 import org.example.data.repository.Readers;
-import org.example.dto.request.BorrowRequest;
-import org.example.dto.request.LoginReaderRequest;
-import org.example.dto.request.RegisterReaderRequest;
-import org.example.dto.request.ReturnRequest;
+import org.example.dto.request.*;
 import org.example.dto.response.BorrowResponse;
 import org.example.dto.response.LoginReaderResponse;
 import org.example.dto.response.RegisterReaderResponse;
@@ -56,9 +53,14 @@ private RegisterReaderRequest request(){
 
     @Test
     public void testGetAuthor(){
-        List<Book> books = readerService.getAuthorBooks("usman");
+        List<Book> books = readerService.getAuthorBooks(request1());
         System.out.println(books);
         assertEquals(2,books.size());
+    }
+    private AuthorName request1(){
+        AuthorName authorName = new AuthorName();
+        authorName.setName("usman");
+        return authorName;
     }
 
     @Test
