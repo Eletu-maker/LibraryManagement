@@ -16,6 +16,7 @@ import org.example.dto.response.ReturnResponse;
 import org.example.exception.BorrowException;
 import org.example.exception.LoginException;
 import org.example.exception.RegisterException;
+import org.example.exception.ReturnException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -84,8 +85,36 @@ public class ReaderServiceImpl implements ReaderService{
         ReturnResponse response = new ReturnResponse();
         Reader reader= readers.findByEmail(request.getEmail());
         if(!reader.isLogin()) throw new LoginException("need to login");
+        if(reader.getBooksBorrowed() == null) throw new ReturnException("they is no books in your storage");
+        Author authorAcc = authors.findByName(request.getAuthor());
+        if (authorAcc == null) throw new BorrowException("Author not found");
+        reader.getBooksBorrowed().remove(getBook(request));
+        readers.save(reader);
+        for (Book book: authorAcc.getMyBooks()){
+            if(book.getTitle().equals(request.getTitle())){
+                int num = book.getNumber() +1;
+                book.setNumber(num);
+                book.setTimeCollected(null);
+                book.setTimeToReturn(null);
+                authors.save(authorAcc);
+            }
+        }
+        response.setMessage("return successful");
 
-        return null;
+        return response;
+    }
+
+    private Book getBook(ReturnRequest request){
+        Reader reader= readers.findByEmail(request.getEmail());
+        if(!reader.isLogin()) throw new LoginException("need to login");
+        if(reader.getBooksBorrowed() == null) throw new ReturnException("they is no books in your storage");
+        for (Book book:reader.getBooksBorrowed()){
+            if(book.getTitle().equals(request.getTitle()) && book.getAuthor().equals(request.getAuthor())){
+                return book;
+            }
+        }
+        return  null;
+
     }
 
 
@@ -103,8 +132,6 @@ public class ReaderServiceImpl implements ReaderService{
     private Book getTheBook(BorrowRequest request){
         Author authorAcc = authors.findByName(request.getAuthor());
         if (authorAcc == null) throw new BorrowException("Author not found");
-
-        //List<Book> authorBooks = getAuthorBooks(request.getAuthor());
         for (Book book:authorAcc.getMyBooks()){
             if(book.getTitle().equals(request.getTitle())){
                 if(book.getNumber() <= 0) throw new BorrowException("out of book");

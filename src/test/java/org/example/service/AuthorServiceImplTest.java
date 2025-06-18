@@ -1,12 +1,10 @@
 package org.example.service;
 
 import org.example.data.model.Book;
-import org.example.dto.request.BookRequest;
-import org.example.dto.request.LoginAuthorRequest;
-import org.example.dto.request.LoginReaderRequest;
-import org.example.dto.request.RegisterAuthorRequest;
+import org.example.dto.request.*;
 import org.example.dto.response.LoginAuthorResponse;
 import org.example.dto.response.RegisterAuthorResponse;
+import org.example.dto.response.RemoveBookResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -62,7 +60,7 @@ public class AuthorServiceImplTest {
     private BookRequest book(){
         BookRequest book = new BookRequest();
         book.setAuthor("usman");
-        book.setTitle("my demo");
+        book.setTitle("my temo");
         book.setEmail("usman@gmail.com");
         book.setNumber(5);
         return book;
@@ -86,5 +84,21 @@ public class AuthorServiceImplTest {
         Map<String, List<Book>> book = librariesService.getBorrowBook();
         assertEquals(1,book.size());
     }
+
+    @Test
+    public void testRemoveBook(){
+        RemoveBookResponse response = librariesService.removeBook(removeBookRequest());
+        assertEquals("Removed successfully",response.getMessage());
+
+    }
+
+    private RemoveBookRequest removeBookRequest(){
+        RemoveBookRequest request = new RemoveBookRequest();
+        request.setAuthor("usman");
+        request.setTitle("my temo");
+        return request;
+    }
+
+
 
 }

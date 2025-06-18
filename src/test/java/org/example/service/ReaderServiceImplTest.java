@@ -5,9 +5,11 @@ import org.example.data.repository.Readers;
 import org.example.dto.request.BorrowRequest;
 import org.example.dto.request.LoginReaderRequest;
 import org.example.dto.request.RegisterReaderRequest;
+import org.example.dto.request.ReturnRequest;
 import org.example.dto.response.BorrowResponse;
 import org.example.dto.response.LoginReaderResponse;
 import org.example.dto.response.RegisterReaderResponse;
+import org.example.dto.response.ReturnResponse;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -67,6 +69,20 @@ private RegisterReaderRequest request(){
 
     private BorrowRequest borrowRequest(){
         BorrowRequest request = new BorrowRequest();
+        request.setTitle("my temo");
+        request.setAuthor("usman");
+        request.setEmail("eric@gmail.com");
+        return request;
+    }
+
+    @Test
+    public void testReturnBook(){
+        ReturnResponse response = readerService.returnBook(returnRequest());
+        assertEquals("return successful",response.getMessage());
+    }
+
+    private ReturnRequest returnRequest(){
+        ReturnRequest request = new ReturnRequest();
         request.setTitle("my temo");
         request.setAuthor("usman");
         request.setEmail("eric@gmail.com");
